@@ -1,0 +1,1 @@
+docker build . -t lalayants/raskat_test
