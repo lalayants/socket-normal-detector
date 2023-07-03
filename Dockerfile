@@ -38,4 +38,6 @@ RUN apt-get install librealsense2-utils -y
 RUN apt-get install librealsense2-dev -y 
 RUN apt-get install librealsense2-dbg -y
 
+WORKDIR /workspace/
+
 CMD ["/bin/bash"]
