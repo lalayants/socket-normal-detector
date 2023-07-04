@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 SHELL ["/bin/bash", "-ci"]
 ENV DEBIAN_FRONTEND noninteractive
 
-WORKDIR /workspace/ros_ws
+WORKDIR /workspace/
 
 RUN apt-get update && \
     apt-get install -y \
@@ -37,7 +37,20 @@ RUN apt-get install librealsense2-dkms -y
 RUN apt-get install librealsense2-utils -y 
 RUN apt-get install librealsense2-dev -y 
 RUN apt-get install librealsense2-dbg -y
+RUN apt-get install cmake -y
+RUN apt-get install libglfw3 libglfw3-dev -y
 
 WORKDIR /workspace/
+RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade
+RUN git clone https://github.com/IntelRealSense/librealsense.git
+RUN apt-get install libssl-dev libusb-1.0-0-dev libudev-dev pkg-config libgtk-3-dev cmake -y
+RUN apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev at -y
+
+# RUN bash /scripts/setup_udev_rules.sh
+# RUN bash /scripts/patch-realsense-ubuntu-lts-hwe.sh
+RUN apt-get install vtk7
+RUN cp /usr/bin/vtk7 /usr/bin/vtk -r
+WORKDIR /workspace/librealsense
+RUN mkdir build && cd build && cmake ../ -DBUILD_PCL_EXAMPLES=true && make
 
 CMD ["/bin/bash"]
