@@ -71,5 +71,10 @@ RUN apt-get install vtk7
 WORKDIR /workspace/librealsense
 RUN mkdir build && cd build && cmake ../ -DBUILD_PCL_EXAMPLES=true && make install
 
+WORKDIR /workspace/
+RUN apt-get install libgoogle-glog-dev -y
+RUN git clone https://github.com/YoungsonZhao/pcd-viewer.git
+RUN cd pcd-viewer/ && mkdir build && cd build && cmake .. && make
+
 WORKDIR /workspace/my_code
 CMD ["/bin/bash"]
