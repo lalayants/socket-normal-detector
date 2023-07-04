@@ -10,7 +10,7 @@ docker run -it \
 -e XAUTHORITY \
 -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 -v /etc/localtime:/etc/localtime:ro \
--v .:/workspace/ \
+-v ./my_code/:/workspace/my_code \
 --privileged \
 --net=host \
 --name ROS_$ROS1_DISTRO \
