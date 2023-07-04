@@ -202,6 +202,7 @@ CMakeFiles/rs-pcl.dir/rs-pcl.cpp.o
  /usr/include/pcl-1.10/pcl/PCLPointField.h
  /usr/include/pcl-1.10/pcl/PointIndices.h
  /usr/include/pcl-1.10/pcl/PolygonMesh.h
+ /usr/include/pcl-1.10/pcl/TextureMesh.h
  /usr/include/pcl-1.10/pcl/Vertices.h
  /usr/include/pcl-1.10/pcl/common/concatenate.h
  /usr/include/pcl-1.10/pcl/common/copy_point.h
@@ -222,6 +223,12 @@ CMakeFiles/rs-pcl.dir/rs-pcl.cpp.o
  /usr/include/pcl-1.10/pcl/for_each_type.h
  /usr/include/pcl-1.10/pcl/impl/pcl_base.hpp
  /usr/include/pcl-1.10/pcl/impl/point_types.hpp
+ /usr/include/pcl-1.10/pcl/io/boost.h
+ /usr/include/pcl-1.10/pcl/io/file_io.h
+ /usr/include/pcl-1.10/pcl/io/impl/pcd_io.hpp
+ /usr/include/pcl-1.10/pcl/io/low_level_io.h
+ /usr/include/pcl-1.10/pcl/io/lzf.h
+ /usr/include/pcl-1.10/pcl/io/pcd_io.h
  /usr/include/pcl-1.10/pcl/make_shared.h
  /usr/include/pcl-1.10/pcl/pcl_base.h
  /usr/include/pcl-1.10/pcl/pcl_config.h

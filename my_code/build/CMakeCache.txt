@@ -521,6 +521,12 @@ RealsensePCLExamples_BINARY_DIR:STATIC=/workspace/my_code/build
 //Value Computed by CMake
 RealsensePCLExamples_SOURCE_DIR:STATIC=/workspace/my_code
 
+//Value Computed by CMake
+RealsenseWrappers_BINARY_DIR:STATIC=/workspace/my_code/build
+
+//Value Computed by CMake
+RealsenseWrappers_SOURCE_DIR:STATIC=/workspace/my_code
+
 //Path to a file.
 USB_10_INCLUDE_DIR:PATH=/usr/include
 
