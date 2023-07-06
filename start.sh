@@ -11,6 +11,7 @@ docker run -it \
 -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 -v /etc/localtime:/etc/localtime:ro \
 -v ./my_code/:/workspace/my_code \
+-v ./rec_code/:/workspace/rec_code \
 --privileged \
 --net=host \
 --name ROS_$ROS1_DISTRO \
