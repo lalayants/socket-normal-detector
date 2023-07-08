@@ -17,16 +17,17 @@ rs.start_capture(True)  # true: start recording with capture
 
 meta = rs.get_metadata()
 intrinsics = o3d.camera.PinholeCameraIntrinsic(meta.width, meta.height, *meta.intrinsics.get_focal_length(), *meta.intrinsics.get_principal_point())
+socket_pcd = o3d.io.read_point_cloud('models/plug_50000.pcd')
 while True:
     im_rgbd = rs.capture_frame(True, True) # wait for frames and align them
     # print(rs.get_metadata().intrinsics.intrinsic_matrix, rs.get_metadata().depth_scale)
-
-    # cv2.imwrite('1.jpg', np.array(im_rgbd.depth))
     pcd = o3d.geometry.PointCloud.create_from_depth_image(im_rgbd.depth.to_legacy(), rs.get_metadata().intrinsics)
-    # pcd = o3d.geometry.PointCloud.create_from_depth_image(im_rgbd.depth, rs.get_metadata().intrinsics, extrinsic=extr, depth_scale=rs.get_metadata().depth_scale)
-    # break
-    hull = pcd.compute_convex_hull()
-    o3d.visualization.draw([{'name': 'eagle', 'geometry': pcd}, {'name': 'convex hull', 'geometry': hull}])
     cv2.imwrite('1.jpg', np.array(im_rgbd.depth))
+    o3d.io.write_point_cloud("copy_of_fragment.pcd", pcd)
+    o3d.visualization.draw_geometries([pcd],
+                                      zoom=0.3412,
+                                      front=[0, 0, 1],
+                                  lookat=[0, 0, 0],
+                                  up=[0, -1, 0])
 
 rs.stop_capture()
