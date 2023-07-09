@@ -74,5 +74,5 @@ RUN mkdir build && cd build && cmake ../ -DBUILD_PCL_EXAMPLES=true && make insta
 WORKDIR /workspace/
 RUN apt-get install libgoogle-glog-dev pcl-tools -y
 
-WORKDIR /workspace/my_code
+WORKDIR /workspace/
 CMD ["/bin/bash"]

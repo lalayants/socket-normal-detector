@@ -12,6 +12,7 @@ docker run -it \
 -v /etc/localtime:/etc/localtime:ro \
 -v ./my_code/:/workspace/my_code \
 -v ./rec_code/:/workspace/rec_code \
+-v ./models/:/workspace/models \
 --privileged \
 --net=host \
 --name ROS_$ROS1_DISTRO \
