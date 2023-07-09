@@ -77,32 +77,38 @@ extr = np.array([
 rs = o3d.t.io.RealSenseSensor()
 rs.init_sensor(rs_cfg, 0)
 rs.start_capture(True)  # true: start recording with capture
-print(o3d.t.io.RealSenseSensor.list_devices())
+# print(o3d.t.io.RealSenseSensor.list_devices())
 meta = rs.get_metadata()
 intrinsics = o3d.camera.PinholeCameraIntrinsic(meta.width, meta.height, *meta.intrinsics.get_focal_length(), *meta.intrinsics.get_principal_point())
-target = o3d.io.read_point_cloud('models/plug_50000.pcd').scale(scale=0.0008, center=[0,0,0])
+# target = o3d.io.read_point_cloud('models/plug_50000.pcd').scale(scale=0.001, center=[0,0,0])
+# o3d.io.write_point_cloud("plug_50000_mini.pcd", target)
+target = o3d.io.read_point_cloud('rec_code/milk.pcd')
+
 print(target.get_max_bound()-target.get_min_bound())
 while True:
     im_rgbd = rs.capture_frame(True, True) # wait for frames and align them
     # print(rs.get_metadata().intrinsics.intrinsic_matrix, rs.get_metadata().depth_scale)
-    source = o3d.geometry.PointCloud.create_from_depth_image(im_rgbd.depth.to_legacy(), rs.get_metadata().intrinsics, depth_scale=rs.get_metadata().depth_scale, extrinsic=extr)
-    rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(im_rgbd.color.to_legacy(), im_rgbd.depth.to_legacy())
-    source = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, rs.get_metadata().intrinsics, extrinsic=extr)
-    print(source.get_max_bound()-source.get_min_bound())
+    # source = o3d.geometry.PointCloud.create_from_depth_image(im_rgbd.depth.to_legacy(), rs.get_metadata().intrinsics, depth_scale=rs.get_metadata().depth_scale, extrinsic=extr)
+    # rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(im_rgbd.color.to_legacy(), im_rgbd.depth.to_legacy())
+    # source = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, rs.get_metadata().intrinsics, extrinsic=extr)
+    # print(source.get_max_bound()-source.get_min_bound())
+    source = o3d.io.read_point_cloud('rec_code/milk_cartoon_all_small_clorox.pcd')
     
     # cv2.imwrite('1.jpg', np.array(im_rgbd.depth))
-    voxel_size = 0.01  # means 5cm for this dataset
-    source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(
-        voxel_size)
-    result_ransac = execute_global_registration(source_down, target_down,
-                                            source_fpfh, target_fpfh,
-                                            voxel_size)
-    draw_registration_result(source_down, target_down, result_ransac.transformation)
-    o3d.io.write_point_cloud("copy_of_fragment.pcd", source)
-    # o3d.visualization.draw_geometries([source, target],
-    #                                   zoom=0.3412,
-    #                                   front=[0, 0, 1],
-    #                               lookat=[0, 0, 0],
-    #                               up=[0, -1, 0])
+    # voxel_size = 0.01  # means 5cm for this dataset
+    # source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(
+    #     voxel_size)
+    # result_ransac = execute_global_registration(source_down, target_down,
+    #                                         source_fpfh, target_fpfh,
+    #                                         voxel_size)
+    # draw_registration_result(source_down, target_down, result_ransac.transformation)
+    # o3d.io.write_point_cloud("copy_of_fragment.pcd", source)
+    print(source)
+    source.paint_uniform_color([1, 0.706, 0])
+    o3d.visualization.draw_geometries([source])
+                                #       zoom=0.3412,
+                                #       front=[0, 0, 1],
+                                #   lookat=[0, 0, 0],
+                                #   up=[0, -1, 0])
 
 rs.stop_capture()
