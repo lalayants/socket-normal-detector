@@ -91,15 +91,16 @@ main (int argc,
       cloud_in->points[i].x = cloud_in->points[i].x / scale;
       cloud_in->points[i].y = cloud_in->points[i].y / scale;
       cloud_in->points[i].z = cloud_in->points[i].z / scale;
-    } else {
-      std::cout << "\n ERROR \n";
-      cloud_in->points[i].x = std::numeric_limits<float>::quiet_NaN();;
-      cloud_in->points[i].y = std::numeric_limits<float>::quiet_NaN();;
-      cloud_in->points[i].z = std::numeric_limits<float>::quiet_NaN();;
+    } 
+    // else {
+    //   std::cout << "\n ERROR \n";
+    //   cloud_in->points[i].x = std::numeric_limits<float>::quiet_NaN();;
+    //   cloud_in->points[i].y = std::numeric_limits<float>::quiet_NaN();;
+    //   cloud_in->points[i].z = std::numeric_limits<float>::quiet_NaN();;
       
-    }
+    // }
   }
-  pcl::io::savePCDFileASCII ("fixed_pcd.pcd", *cloud_in);
+  // pcl::io::savePCDFileASCII ("fixed_pcd.pcd", *cloud_in);
 
   // Defining a rotation matrix and translation vector
   Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity ();

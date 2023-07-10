@@ -15,8 +15,6 @@ main (int argc,
 {
   // The point clouds we will be using
   PointCloudT::Ptr cloud_in (new PointCloudT);
-  PointCloudT::Ptr cloud_out (new PointCloudT);
-
 
   pcl::console::TicToc time;
   time.tic ();
