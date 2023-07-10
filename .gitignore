@@ -11,3 +11,5 @@ CTestTestfile.cmake
 _deps
 .vscode
 rec_code/icp/build/*
+rec_code/del_nan/build/*
+open3d_test_py/test.py
