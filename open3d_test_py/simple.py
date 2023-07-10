@@ -3,6 +3,8 @@ import open3d as o3d
 import cv2
 import numpy as np
 import copy
+import time
+
 
 def draw_registration_result(source, target, transformation):
     source_temp = copy.deepcopy(source)
@@ -18,16 +20,16 @@ def draw_registration_result(source, target, transformation):
     
     
 def preprocess_point_cloud(pcd, voxel_size):
-    print(":: Downsample with a voxel size %.3f." % voxel_size)
+    # print(":: Downsample with a voxel size %.3f." % voxel_size)
     pcd_down = pcd.voxel_down_sample(voxel_size)
 
     radius_normal = voxel_size * 2
-    print(":: Estimate normal with search radius %.3f." % radius_normal)
+    # print(":: Estimate normal with search radius %.3f." % radius_normal)
     pcd_down.estimate_normals(
         o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
 
     radius_feature = voxel_size * 5
-    print(":: Compute FPFH feature with search radius %.3f." % radius_feature)
+    # print(":: Compute FPFH feature with search radius %.3f." % radius_feature)
     pcd_fpfh = o3d.pipelines.registration.compute_fpfh_feature(
         pcd_down,
         o3d.geometry.KDTreeSearchParamHybrid(radius=radius_feature, max_nn=100))
@@ -35,7 +37,7 @@ def preprocess_point_cloud(pcd, voxel_size):
 
 
 def prepare_dataset(voxel_size, source, target):
-    print(":: Load two point clouds and disturb initial pose.")
+    # print(":: Load two point clouds and disturb initial pose.")
 
     demo_icp_pcds = o3d.data.DemoICPPointClouds()
     # source = o3d.io.read_point_cloud(demo_icp_pcds.paths[0])
@@ -53,9 +55,9 @@ def prepare_dataset(voxel_size, source, target):
 def execute_global_registration(source_down, target_down, source_fpfh,
                                 target_fpfh, voxel_size):
     distance_threshold = voxel_size * 1.5
-    print(":: RANSAC registration on downsampled point clouds.")
-    print("   Since the downsampling voxel size is %.3f," % voxel_size)
-    print("   we use a liberal distance threshold %.3f." % distance_threshold)
+    # print(":: RANSAC registration on downsampled point clouds.")
+    # print("   Since the downsampling voxel size is %.3f," % voxel_size)
+    # print("   we use a liberal distance threshold %.3f." % distance_threshold)
     result = o3d.pipelines.registration.registration_ransac_based_on_feature_matching(
         source_down, target_down, source_fpfh, target_fpfh, True,
         distance_threshold,
@@ -70,6 +72,7 @@ def execute_global_registration(source_down, target_down, source_fpfh,
 
 
 def rs_get_pcd(rs, extr):
+    start_time = time.time()
     # source = o3d.geometry.PointCloud.create_from_depth_image(im_rgbd.depth.to_legacy(), rs.get_metadata().intrinsics, depth_scale=rs.get_metadata().depth_scale, extrinsic=extr)
     # rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(im_rgbd.color.to_legacy(), im_rgbd.depth.to_legacy())
     # source = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, rs.get_metadata().intrinsics, extrinsic=extr)
@@ -77,15 +80,17 @@ def rs_get_pcd(rs, extr):
     im_rgbd = rs.capture_frame(True, True) # wait for frames and align them
     rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(im_rgbd.color.to_legacy(), im_rgbd.depth.to_legacy())
     source = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, rs.get_metadata().intrinsics, extrinsic=extr)
-    print(f'RS pcd size: {source.get_max_bound()-source.get_min_bound()}')
+    print(f'RS pcd size: {source.get_max_bound()-source.get_min_bound()}; Done in {time.time() - start_time}')
     return source
 
 
 def match_pcds(source, target, voxel_size = 0.001, draw = False):
+    start_time = time.time()
     source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(voxel_size, source, target)
     result_ransac = execute_global_registration(source_down, target_down,
                                             source_fpfh, target_fpfh,
                                             voxel_size)
+    print(f'Matched in {time.time() - start_time}')
     if draw:
         draw_registration_result(source_down, target_down, result_ransac.transformation)
 
@@ -109,7 +114,6 @@ if __name__ == '__main__':
     # target = o3d.io.read_point_cloud('models/plug_50000.pcd')
     target = o3d.io.read_point_cloud('models/plugs_pcd/milk.pcd')
     print(f'target size: {target.get_max_bound()-target.get_min_bound()}')
-    
     while True:
         source = rs_get_pcd(rs, extr)
         source = o3d.io.read_point_cloud('models/scenes_pcd/milk_cartoon_all_small_clorox_fixed.pcd')
