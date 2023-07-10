@@ -42,7 +42,7 @@ def prepare_dataset(voxel_size):
     trans_init = np.asarray([[0.0, 0.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0],
                              [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
     source.transform(trans_init)
-    draw_registration_result(source, target, np.identity(4))
+    # draw_registration_result(source, target, np.identity(4))
 
     source_down, source_fpfh = preprocess_point_cloud(source, voxel_size)
     target_down, target_fpfh = preprocess_point_cloud(target, voxel_size)
@@ -57,7 +57,7 @@ def execute_global_registration(source_down, target_down, source_fpfh,
     result = o3d.pipelines.registration.registration_ransac_based_on_feature_matching(
         source_down, target_down, source_fpfh, target_fpfh, True,
         distance_threshold,
-        o3d.pipelines.registration.TransformationEstimationPointToPoint(False),
+        o3d.pipelines.registration.TransformationEstimationPointToPoint(True),
         3, [
             o3d.pipelines.registration.CorrespondenceCheckerBasedOnEdgeLength(
                 0.9),
@@ -82,7 +82,7 @@ meta = rs.get_metadata()
 intrinsics = o3d.camera.PinholeCameraIntrinsic(meta.width, meta.height, *meta.intrinsics.get_focal_length(), *meta.intrinsics.get_principal_point())
 # target = o3d.io.read_point_cloud('models/plug_50000.pcd').scale(scale=0.001, center=[0,0,0])
 # o3d.io.write_point_cloud("plug_50000_mini.pcd", target)
-target = o3d.io.read_point_cloud('rec_code/milk.pcd')
+target = o3d.io.read_point_cloud('models/plugs_pcd/milk.pcd')
 
 print(target.get_max_bound()-target.get_min_bound())
 while True:
@@ -92,23 +92,21 @@ while True:
     # rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(im_rgbd.color.to_legacy(), im_rgbd.depth.to_legacy())
     # source = o3d.geometry.PointCloud.create_from_rgbd_image(rgbd_image, rs.get_metadata().intrinsics, extrinsic=extr)
     # print(source.get_max_bound()-source.get_min_bound())
-    source = o3d.io.read_point_cloud('rec_code/milk_cartoon_all_small_clorox.pcd')
+    source = o3d.io.read_point_cloud('models/scenes_pcd/milk_cartoon_all_small_clorox_fixed.pcd')
     
-    # cv2.imwrite('1.jpg', np.array(im_rgbd.depth))
-    # voxel_size = 0.01  # means 5cm for this dataset
-    # source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(
-    #     voxel_size)
-    # result_ransac = execute_global_registration(source_down, target_down,
-    #                                         source_fpfh, target_fpfh,
-    #                                         voxel_size)
-    # draw_registration_result(source_down, target_down, result_ransac.transformation)
+    voxel_size = 0.001  # means 5cm for this dataset
+    source, target, source_down, target_down, source_fpfh, target_fpfh = prepare_dataset(
+        voxel_size)
+    result_ransac = execute_global_registration(source_down, target_down,
+                                            source_fpfh, target_fpfh,
+                                            voxel_size)
+    draw_registration_result(source_down, target_down, result_ransac.transformation)
+    
     # o3d.io.write_point_cloud("copy_of_fragment.pcd", source)
-    print(source)
-    source.paint_uniform_color([1, 0.706, 0])
-    o3d.visualization.draw_geometries([source])
-                                #       zoom=0.3412,
-                                #       front=[0, 0, 1],
-                                #   lookat=[0, 0, 0],
-                                #   up=[0, -1, 0])
+    # o3d.visualization.draw_geometries([target])
+    #                             #       zoom=0.3412,
+    #                             #       front=[0, 0, 1],
+    #                             #   lookat=[0, 0, 0],
+    #                             #   up=[0, -1, 0])
 
 rs.stop_capture()
