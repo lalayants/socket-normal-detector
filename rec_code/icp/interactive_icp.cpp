@@ -44,8 +44,8 @@ main (int argc,
   if (argc < 2)
   {
     printf ("Usage :\n");
-    printf ("\t\t%s file.ply number_of_ICP_iterations\n", argv[0]);
-    PCL_ERROR ("Provide one ply file.\n");
+    printf ("\t\t%s file.pcd number_of_ICP_iterations scale\n", argv[0]);
+    PCL_ERROR ("Provide one pcd file.\n");
     return (-1);
   }
 
@@ -61,6 +61,20 @@ main (int argc,
     }
   }
 
+  int scale = 1;
+
+  if (argc > 3)
+  {
+    // If the user passed the scale as an argument
+    scale = atoi (argv[3]);
+    if (scale < 1)
+    {
+      PCL_ERROR ("Scale must be >= 1\n");
+      return (-1);
+    }
+  }
+
+
   pcl::console::TicToc time;
   time.tic ();
   if (pcl::io::loadPCDFile<PointT> (argv[1], *cloud_in) < 0)
@@ -69,6 +83,14 @@ main (int argc,
     return (-1);
   }
   std::cout << "\nLoaded file " << argv[1] << " (" << cloud_in->size () << " points) in " << time.toc () << " ms\n" << std::endl;
+  
+  for (int i = 0; i < cloud_in->points.size(); i++)
+  {
+    cloud_in->points[i].x = cloud_in->points[i].x / scale;
+    cloud_in->points[i].y = cloud_in->points[i].y / scale;
+    cloud_in->points[i].z = cloud_in->points[i].z / scale;
+  }
+
 
   // Defining a rotation matrix and translation vector
   Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity ();
